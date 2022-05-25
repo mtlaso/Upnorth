@@ -1,0 +1,485 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/details_produit.css">
+    <link rel="stylesheet" href="/css/profil.css">
+
+        <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+    
+<main class="profil">
+    <div class="fil-ariane">
+        <ul>
+            <li><a href="/">Accueil</a>&nbsp;⚬&nbsp;</li>
+            <li><a href="/produits">Produits</a>&nbsp;⚬&nbsp;</li>
+            <% if(produit.sexe === "h"){%>
+                <li><a href="/recherche/categories/hommes">Pour homme</a>&nbsp;⚬&nbsp;</li>
+            <%} else if(produit.sexe === "f") {%>
+                <li><a href="/recherche/categories/femmes">Pour femme</a>&nbsp;⚬&nbsp;</li>
+            <%} else { %>
+                <li><a href="/recherche/categories/unisexe">Unisexe</a>&nbsp;⚬&nbsp;</li>
+            <% } %>
+            <li><a href="/produits/<%= produit._id %>" class="fil-ariane__actif"><%= produit.nom %></a></li>
+        </ul>
+    </div>
+
+    <div class="container-produit">
+
+        <div class="container-produit__image">
+            <img src="/uploads/images_produits/<%= produit.image %>">
+        </div>
+
+        <div class="container-produit__infos">
+            <form method="post" action="/profil/panier/<%= produit._id %>" class="form_produit">
+                <h1><%= produit.nom %></h1>
+                
+                <div class="container-produits__infos__champ">
+                    <h2>Description du produit</h2>
+                    <span><%= produit.desc %></span>
+                </div>
+                
+                <div class="container-produits__infos__champ">
+                    <h2>Sexe</h2>
+                    <% if(produit.sexe === "h"){%>
+                        <a href="/recherche/categories/hommes">Pour homme</a>
+                    <%} else if(produit.sexe === "f") {%>
+                        <a href="/recherche/categories/femmes">Pour femme</a>
+                    <%} else { %>
+                        <a href="/recherche/categories/unisexe">Unisexe</a>
+                    <% } %>
+                </div>
+                
+                <div class="container-produits__infos__champ">
+                    <h2>Catégorie</h2>
+                    <span><%= categorie.nom %></span>
+                </div>
+
+                <div class="container-produits__infos__champ">
+                    <h2>Prix</h2>
+                    <span><%= produit.prix %> $</span>
+                </div>
+
+                <div class="container-produits__infos__champ">
+                    <h2>Numéro de produit</h2>
+                    <span><%= produit._id %></span>
+                </div>
+
+                <div class="container-produits__infos__champ">
+                    <h2>Statut</h2>
+                    <% if (produit.est_discontinue) { %>
+                        <span>Discontinué</span>
+                    <% } else { %>
+                        <span>Disponible</span>
+                    <% } %>
+                </div>
+            
+                <div class="container-produits__infos__champ">
+                    <label for="tailles">
+                        <h2>Tailles et quantitées</h2>
+                    </label>
+                    
+                    <select name="tailles" id="tailles">
+                        <% for(let i=0; i < tailles.length; i++){ %>
+                            <% if (produit.tailles[i].qty > 0) { %>
+                                <option value="<%= tailles[i].nom %>"><%= tailles[i].nom %> - <%= produit.tailles[i].qty %></option>
+                            <% } %>
+                        <% } %>
+                    </select> 
+                </div>
+
+                <% if (locals.ejs_is_logged_in===true) { %>
+                    <button type="submit" class="btn-big">Ajouter au panier</button>
+                    <button class="btn-liste" id="btn-ajouter-liste" data-id-produit="<%= id_article %>">Ajouter dans votre liste</button>    
+                    
+                    <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                        <span class="succes" id="ajout-liste-succes"></span>
+                    </div>
+                    <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                        <span class="erreur" id="ajout-liste-erreur"></span>
+                    </div>
+                <% } else { %>
+                    <button type="button" class="btn-desactiver">Ajouter au panier</button>
+                    <button type="button" class="btn-liste btn-desactiver">Ajouter dans votre liste</button>
+                    <br>
+                    <a href="/connexion"><em style="max-width: fit-content;"><strong>Connectez-vous </strong>pour pouvoir acheter des produits.</em></a>
+                <% } %>
+                    
+                
+                <% if(ajouter) { %>
+                    <div class="produitAjouter">
+                        <p>Le produit a bien été ajouter au panier!</p>
+                    </div>    
+                <% } %>
+            </form>
+
+
+            <% if (estAdmin) { %>
+                <div>
+                    <button onclick="DiscontinuerArticle();" id="btn-discontinuer" data-id-article="<%= id_article %>" data-url-discontinuer="<%= url_discontinuer %>">Discontinuer</button>
+                    <button onclick="AfficherFormulaireModification();" id="btn-modifier">Modifier</button>
+                </div>
+
+                <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                    <span id="discontinuer-succes" class="succes"></span>
+                </div>
+
+                <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                    <span id="discontinuer-err" class="erreur"></span>
+                </div>
+                    
+                <div id="modifier-popup" class="modifier-popup">
+                        <form id="modifier-form" method="post">
+                            <span class="modifier-popup-btn" onclick="FermerPopUpModification();">&#x2716;</span>
+                            <h1>Modifier un produit</h1>
+                            
+                            <input type="hidden" name="ancienIdProduit" value="<%= id_article %>">
+
+                            <label for="nom">Nom du produit</label>
+                            <input id="nom" type="text" name="nom" minlength="0" maxlength="60" placeholder="Modèle..." value="<%= produit.nom %>" required>
+                            <span id="popup-err-ajout-nom" class="erreur"></span>
+    
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" minlength="0" maxlength="500" placeholder="Une description..." required><%= produit.desc %></textarea>
+                            <span id="popup-err-ajout-description" class="erreur"></span>
+    
+                            <label for="prix">Prix ($)</label>
+                            <input id="prix" type="number" name="prix" min="0" max="9999999999" placeholder="67" value="<%= produit.prix %>" required>
+                            <span id="popup-err-ajout-prix" class="erreur"></span>
+    
+                            <label for="categorie">Catégorie</label>
+                            <select name="categorie" id="categorie" required>
+                                <option value="">Choisir</option>
+                                <% categories.forEach(function(lacategorie){ %>
+                                    <% if (lacategorie.nom === categorie.nom) { %>
+                                        <option value="<%= lacategorie.nom %>" selected><%= lacategorie.nom %></option>
+                                    <% } else { %>
+                                            <option value="<%= lacategorie.nom %>"><%= lacategorie.nom %></option>
+                                    <% } %>
+                                <% }); %>
+                            </select>
+                            <span id="popup-err-ajout-categorie" class="erreur"></span>
+    
+                            <label for="sexe">Sexe</label>
+                            <select name="sexe" id="sexe" required>
+                                <option value="">Choisir</option>
+                                <% sexes.forEach(function(lesexe){ %>
+                                    <% if (lesexe === produit.sexe) { %>
+                                        <option value="<%= lesexe %>" selected><%= lesexe %></option>
+                                    <% } else { %>
+                                        <option value="<%= lesexe %>"><%= lesexe %></option>
+                                    <% } %>
+                                <% }); %>
+                            </select>
+                            <span id="popup-err-ajout-sexe" class="erreur"></span>
+    
+    
+                            <label for="est_discontinue">Est discontinué ?</label>
+                            <% if (produit.est_discontinue) { %>
+                                <input style="width: 1rem;" type="checkbox" name="est_discontinue" id="est_discontinue" checked>
+                            <% } else { %>
+                                <input style="width: 1rem;" type="checkbox" name="est_discontinue" id="est_discontinue">
+                                
+                            <% } %>
+                            <span id="popup-err-ajout-est_discontinue" class="erreur"></span>
+                            
+    
+                            <table>
+                                <tr>
+                                  <th>Taille</th>
+                                  <th>Quantité</th>
+                                </tr>
+    
+                                <% tailles.forEach(function(taille, index){ %>
+                                    <tr>
+                                        <td>
+                                            <p type="text"><%= taille.nom %></p>
+                                        </td>
+                                        <td>
+                                            <input id="qty_<%= taille.nom %>" type="number" name="qty_<%= taille.nom %>" min="0" max="9999999999" placeholder="0" value="<%= produit.tailles[index].qty %>" required>
+                                        </td>
+                                        <span id="popup-err-ajout-qty_<%= taille.nom %>" class="erreur"></span>
+                                    </tr>
+                                <% }); %>
+    
+                              </table>
+    
+                            <label for="image">Image (si laissé vide, l'image ne sera pas changée)</label>
+                            <input id="image_produit" type="file" name="image_produit" accept="image/*">
+                            <span id="popup-err-ajout-image" class="erreur"></span>
+                            
+                            <button class="btn-big">Modifier</button>
+
+                            <span id="popup-succes-ajouter" class="succes" onclick="this.style.display='none';"></span>
+                            <span id="popup-err-ajouter" class="erreur" onclick="this.style.display='none';"></span>
+
+                            <br>
+                            <a href="#" class="modifier" onclick="FermerPopUpModification();">Annuler</a>
+                        </form>
+                </div>
+
+                <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                    <span id="modifier-succes" class="succes"></span>
+                </div>
+
+                <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                    <span id="modifier-err" class="erreur"></span>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<div id="overlay" class="overlay"></div>
+
+</main>
+
+<%- include('includes/footer.ejs'); %>
+
+    <% if (locals.ejs_is_logged_in===true) { %>
+    <!-- Ajouter produit dans la liste (wish list) -->
+        <script async>
+            const champSuccesAjoutListe = document.getElementById("ajout-liste-succes");
+            const champErreurAjoutListe = document.getElementById("ajout-liste-erreur");
+
+            const btn_ajouter_liste = document.getElementById("btn-ajouter-liste");
+            btn_ajouter_liste.addEventListener("click", AjouterProduitDansListe);
+
+            async function AjouterProduitDansListe(e) {
+                try {
+                    e.preventDefault();
+                    EffacerChamps();
+
+                    const idProduit = btn_ajouter_liste.dataset.idProduit;
+                    
+                    let data;
+                    let msg;
+                    
+                    data = new URLSearchParams();
+                    data.append("idProduit", idProduit);
+
+                    msg = await fetch("/profil/liste", {
+                        method: 'POST',
+                        body: data
+                    });
+
+                    msg = await msg.json();
+                    console.log("msg : ", msg);
+
+                    if (msg.status === "ok") {
+                        champSuccesAjoutListe.textContent = "✖ Produit ajouté dans votre liste !";
+                    } else {
+                        champErreurAjoutListe.textContent = "✖ Une erreur s'est produite. Reéssayez plus tard.";
+                    }
+
+                } catch (erreur) {
+                    champErreurAjoutListe.textContent = "✖ Une erreur s'est produite. Reéssayez plus tard.";
+                }
+            }
+
+            function EffacerChamps() {
+                champSuccesAjoutListe.textContent = "";
+                champErreurAjoutListe.textContent = "";
+            }
+        </script>
+    <% } %>
+
+    <% if (estAdmin) { %>
+        <!-- Discontinuer produit -->
+        <script async>
+            const champSucces = document.getElementById("discontinuer-succes");
+            const champErreur = document.getElementById("discontinuer-err");
+                    
+            async function DiscontinuerArticle() {
+                try {
+                    effacerChamps();
+
+                    const btnDiscontinuer = document.getElementById('btn-discontinuer');
+                    const url = btnDiscontinuer.dataset.urlDiscontinuer
+                    const idArticleDiscontinue = btnDiscontinuer.dataset.idArticle;
+
+                    let data;
+                    let msg;
+                    
+                    const form = new FormData();
+                    form.append("id_article", idArticleDiscontinue);
+                    
+                    data = new URLSearchParams();
+                    for (const pair of form) {
+                        data.append(pair[0], pair[1]);
+                    }
+        
+                    msg = await fetch(url, {
+                    method: 'POST',
+                    body: data
+                    });
+        
+                    msg = await msg.json();
+        
+                    if (msg.erreurs) {
+                        if (msg.erreurs.nom) {
+                            champErreur.textContent = `✖ ${msg.erreurs}`;
+                        }
+        
+                    } 
+                    else if (msg.status === "ok"){
+                        champSucces.textContent = "✖ Produit discontinué avec succés !";
+                    }
+
+                } catch (erreur) {
+                    champErreur.textContent = "✖ Une erreur s'est produite après avoir essayé de discontinuer un produit. Réessayez plus tard.";
+                }
+
+                function effacerChamps() {
+                    champSucces.textContent = "";
+                    champErreur.textContent = "";
+                    
+                    champSucces.parentElement.style.display = "block";
+                    champErreur.parentElement.style.display = "block";
+                }
+                
+            }
+        </script>
+
+        <!-- Modification de produit -->
+        <script async>
+            const champSuccesModification = document.getElementById("popup-succes-ajouter");
+            const champErreurModification = document.getElementById("popup-succes-ajouter");
+            
+            const overlay = document.getElementById("overlay");
+
+            const div_formModifier = document.getElementById("modifier-popup");
+            const formModifier = document.getElementById("modifier-form");
+            formModifier.addEventListener("submit", ModifierProduit);
+
+
+                // Ajouter des produits de façon asynchrone (sans recharger la page)
+                async function ModifierProduit(e) {
+                    try {
+                        e.preventDefault();
+                        effacerChamps();
+
+                        let url;
+                        let formulaire;
+
+                        // Preparer requete
+                        if (document.getElementById("image_produit").value !== "") {
+                            url = "<%= url_modifier_avec_image %>";
+                            formModifier.setAttribute("enctype", "multipart/form-data");
+                        } else {
+                            url = "<%= url_modifier_sans_image %>";
+                            formModifier.setAttribute("enctype", "application/x-www-form-urlencoded");
+                        }
+
+                        formulaire = new URLSearchParams(new FormData(formModifier))
+                        
+                        // formulaire = new FormData(formModifier);
+
+                        const options = {
+                            method: 'POST',
+                            body: formulaire,
+                        };
+
+                        let msg = await fetch(url, options);
+                        msg = await msg.json();
+
+                        if (msg.erreurs) {
+                            if (msg.erreurs.nom) {
+                                console.log("dedans nom")
+                                document.getElementById("popup-err-ajout-nom").textContent = msg.erreurs.nom.erreur;
+                            }
+
+                            if (msg.erreurs.description) {
+                                document.getElementById("popup-err-ajout-description").textContent = msg.erreurs.description.erreur;
+                            }
+
+                            if (msg.erreurs.prix) {
+                                document.getElementById("popup-err-ajout-prix").textContent = msg.erreurs.prix.erreur;
+                            }
+
+                            if (msg.erreurs.categorie) {
+                                document.getElementById("popup-err-ajout-categorie").textContent = msg.erreurs.categorie.erreur;
+                            }
+
+                            if (msg.erreurs.image) {
+                                document.getElementById("popup-err-ajout-image").textContent = msg.erreurs.image.erreur;
+                            }
+
+                            if (msg.erreurs.sexe) {
+                                document.getElementById("popup-err-ajout-sexe").textContent = msg.erreurs.sexe.erreur;
+                            }
+
+                            if (msg.erreurs.est_discontinue) {
+                                document.getElementById("popup-err-ajout-est_discontinue").textContent = msg.erreurs.est_discontinue.erreur;
+                            }
+                            
+                            if (msg.erreurs.qty_Petit) {
+                                document.getElementById("popup-err-ajout-qty_Petit").textContent = msg.erreurs.qty_Petit.erreur;
+                            }
+
+                            if (msg.erreurs.qty_Moyen) {
+                                document.getElementById("popup-err-ajout-qty_Moyen").textContent = msg.erreurs.qty_Moyen.erreur;
+                            }
+
+                            if (msg.erreurs.qty_Grand) {
+                                document.getElementById("popup-err-ajout-qty_Grand").textContent = msg.erreurs.qty_Grand.erreur;
+                            }
+
+                            if (msg.erreurs.qty_Unique) {
+                                document.getElementById("popup-err-ajout-qty_Unique").textContent = msg.erreurs.qty_Unique.erreur;
+                            }
+
+                            else {
+                                champErreurModification.textContent = "✖ Une erreur s'est produite. Reéssayez plus tard.";
+                            }
+                            
+
+                        } 
+                        else if (msg.status === "ok"){
+                            champSuccesModification.textContent = "✖ Produit modifié avec succés !";
+                        }
+
+                    } catch(err) {
+                        champErreurModification.textContent = "✖ Une erreur s'est produite. Reéssayez plus tard.";
+                        return false;
+                    }
+                    
+                }
+
+                function effacerChamps() {
+                    champSuccesModification.textContent ="";
+                    champErreurModification.textContent ="";
+                    document.getElementById("popup-err-ajout-nom").textContent = "";
+                    document.getElementById("popup-err-ajout-description").textContent = "";
+                    document.getElementById("popup-err-ajout-prix").textContent = "";
+                    document.getElementById("popup-err-ajout-categorie").textContent = "";
+                    document.getElementById("popup-err-ajout-image").textContent = "";
+                    document.getElementById("popup-err-ajout-sexe").textContent = "";
+                    document.getElementById("popup-err-ajout-est_discontinue").textContent = "";
+                    document.getElementById("popup-err-ajout-qty_Petit").textContent = "";
+                    document.getElementById("popup-err-ajout-qty_Moyen").textContent = "";
+                    document.getElementById("popup-err-ajout-qty_Grand").textContent = "";
+                    document.getElementById("popup-err-ajout-qty_Unique").textContent = "";
+                }
+
+                // Afficher le formulaire
+                function AfficherFormulaireModification() {
+                    overlay.style.display = "flex";
+                    div_formModifier.className = "modifier-popup visible";
+                    div_formModifier.focus();
+                }
+
+                // Fermer le formulaire
+                function FermerPopUpModification() {
+                    overlay.style.display = "none";
+                    div_formModifier.className = "modifier-popup";
+                    document.body.focus();
+                }
+
+
+        </script>
+    <% } %>
+
+</body>
+</html>

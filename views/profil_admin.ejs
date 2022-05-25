@@ -1,0 +1,266 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <% if(titre_page){ %>
+        <title><%= titre_page %></title>
+    <% } else{ %>
+        <title>UpNorth - Magasin</title>
+    <% } %>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+    <%- include('includes/header_profil.ejs'); %>
+    
+    <% if (utilisateur.email_confirmer !== true) { %>
+        <%- include('includes/header_confirmer_email.ejs'); %>
+    <% } %>
+
+    <main class="profil">
+        <% if(utilisateur){ %>
+            <h1>Bonjour, <%= utilisateur.nom %> </h1>
+            <h2>Voici les informations sur vous :</h2>
+            
+            <div class="informations">
+                <h3>Informations</h3>
+                <div>
+                    <h4 class="p-profil">Général</h4>
+                    <p class="p-profil">Id : <%= utilisateur._id %></p>
+                    <p class="p-profil">Nom : <%= utilisateur.nom %></p>
+                    <p class="p-profil">Age : <%= utilisateur.age %></p>
+                    <p class="p-profil">Statut administrateur : <%= utilisateur.est_admin %></p>
+                </div>
+                <div>
+                    <h4 class="p-profil">Contact</h4>
+                    <p class="p-profil">Courriel : <%= utilisateur.email %></p>
+                    <p class="p-profil">Teléphone : <%= utilisateur.tel %></p>
+                    <p class="p-profil">Adresse : <%= utilisateur.adresse %></p>
+                </div>
+            </div>
+
+            <% if (utilisateur.est_admin) {%>
+                <div class="informations">
+                    <h3 class="p-profil">Gestion de produit</h3>
+                    <div>
+                        <p class="p-profil">
+                            <a href="#" onclick="AfficherFormulaireAjout();">Ajout d'un produit</a></p>
+                        <p class="p-profil"><a href="/discontinues">Afficher les produits discontinués</a></p>
+                    </div>
+                </div>
+
+                <div class="informations">
+                    <h3 class="p-profil">Gestion d'utilisateur</h3>
+                <div>
+                    <p class="p-profil"><a href="#">Ajout d'un administrateur</a></p>
+                </div>
+                </div>
+
+                <div id="ajouter-popup" class="modifier-popup">
+                    <form id="ajouter-form" action="<%= url_ajouter %>" enctype="multipart/form-data" method="post">
+                        <span class="modifier-popup-btn" onclick="FermerPopUpAjout();">&#x2716;</span>
+                        <h1>Ajouter un produit</h1>
+
+                        <label for="nom">Nom du produit</label>
+                        <input id="nom" type="text" name="nom" minlength="0" maxlength="60" placeholder="Modèle..." required>
+                        <span id="popup-err-ajout-nom" class="erreur"></span>
+
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" minlength="0" maxlength="500" placeholder="Une description..." required></textarea>
+                        <span id="popup-err-ajout-description" class="erreur"></span>
+
+                        <label for="prix">Prix ($)</label>
+                        <input id="prix" type="number" name="prix" min="0" max="9999999999" placeholder="67" required>
+                        <span id="popup-err-ajout-prix" class="erreur"></span>
+
+                        <label for="categorie">Catégorie</label>
+                        <select name="categorie" id="categorie" required>
+                            <option value="">Choisir</option>
+                            <% categories.forEach(function(categorie){ %>
+                                <option value="<%= categorie.nom %>"><%= categorie.nom %></option>
+                            <% }); %>
+                        </select>
+                        <span id="popup-err-ajout-categorie" class="erreur"></span>
+
+                        <label for="sexe">Sexe</label>
+                        <select name="sexe" id="sexe" required>
+                            <option value="">Choisir</option>
+                            <option value="h">Homme</option>
+                            <option value="f">Femmes</option>
+                            <option value="u">Unisexe</option>
+                        </select>
+                        <span id="popup-err-ajout-sexe" class="erreur"></span>
+
+
+                        <label for="est_discontinue">Est discontinué ?</label>
+                        <input style="width: 1rem;" type="checkbox" name="est_discontinue" id="est_discontinue">
+                        <span id="popup-err-ajout-est_discontinue" class="erreur"></span>
+                        
+
+                        <table>
+                            <tr>
+                              <th>Taille</th>
+                              <th>Quantité</th>
+                            </tr>
+
+                            <% tailles.forEach(function(taille){ %>
+                                <tr>
+                                    <td>
+                                        <p type="text"><%= taille.nom %></p>
+                                    </td>
+                                    <td>
+                                        <input id="qty_<%= taille.nom %>" type="number" name="qty_<%= taille.nom %>" min="0" max="9999999999" placeholder="0" required>
+                                    </td>
+                                    <span id="popup-err-ajout-qty_<%= taille.nom %>" class="erreur"></span>
+                                </tr>
+                            <% }); %>
+
+                          </table>
+
+                        <label for="image">Image</label>
+                        <input id="image" type="file" name="image_produit" accept="image/*" required>
+                        <span id="popup-err-ajout-image" class="erreur"></span>
+                        
+                        <button class="btn-big">Ajouter</button>
+
+                        <span id="popup-succes-ajouter" class="succes"><%= success %></span>
+                        <span id="popup-err-ajouter" class="erreur"><%= erreur %></span>
+                    
+                        <br>
+                        <a href="#" class="modifier" onclick="FermerPopUpAjout();">Fermer</a>
+                    </form>
+                </div>
+                <% } %>
+        <% }%>
+        <div id="overlay" class="overlay"></div>
+
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+</body>
+
+<script async>
+    const overlay = document.getElementById("overlay");
+
+    const div_formAjouter = document.getElementById("ajouter-popup");
+    const formAjouter = document.getElementById("ajouter-form");
+    formAjouter.addEventListener("submit", AjouterProduit);
+
+
+        // Ajouter des produits de façon asynchrone (sans recharger la page)
+        async function AjouterProduit(e) {
+            try {
+                e.preventDefault();
+                effacerChamps();
+
+                // Preparer requete
+                const formulaire = new FormData(formAjouter);
+
+                // Envoyer requete
+                const url = formAjouter.attributes.action.value;
+
+                const options = {
+                    method: 'POST',
+                    body: formulaire,
+                };
+
+                let msg = await fetch(url, options);
+                msg = await msg.json();
+                console.log(msg.erreurs)
+
+                if (msg.erreurs) {
+                    console.log("dedans")
+                    if (msg.erreurs.nom) {
+                        console.log("dedans nom")
+                        document.getElementById("popup-err-ajout-nom").textContent = msg.erreurs.nom.erreur;
+                    }
+
+                    if (msg.erreurs.description) {
+                        document.getElementById("popup-err-ajout-description").textContent = msg.erreurs.description.erreur;
+                    }
+
+                    if (msg.erreurs.prix) {
+                        document.getElementById("popup-err-ajout-prix").textContent = msg.erreurs.prix.erreur;
+                    }
+
+                    if (msg.erreurs.categorie) {
+                        document.getElementById("popup-err-ajout-categorie").textContent = msg.erreurs.categorie.erreur;
+                    }
+
+                    if (msg.erreurs.image) {
+                        document.getElementById("popup-err-ajout-image").textContent = msg.erreurs.image.erreur;
+                    }
+
+                    if (msg.erreurs.sexe) {
+                        document.getElementById("popup-err-ajout-sexe").textContent = msg.erreurs.sexe.erreur;
+                    }
+
+                    if (msg.erreurs.est_discontinue) {
+                        document.getElementById("popup-err-ajout-est_discontinue").textContent = msg.erreurs.est_discontinue.erreur;
+                    }
+                    
+                    if (msg.erreurs.qty_Petit) {
+                        document.getElementById("popup-err-ajout-qty_Petit").textContent = msg.erreurs.qty_Petit.erreur;
+                    }
+
+                    if (msg.erreurs.qty_Moyen) {
+                        document.getElementById("popup-err-ajout-qty_Moyen").textContent = msg.erreurs.qty_Moyen.erreur;
+                    }
+
+                    if (msg.erreurs.qty_Grand) {
+                        document.getElementById("popup-err-ajout-qty_Grand").textContent = msg.erreurs.qty_Grand.erreur;
+                    }
+
+                    if (msg.erreurs.qty_Unique) {
+                        document.getElementById("popup-err-ajout-qty_Unique").textContent = msg.erreurs.qty_Unique.erreur;
+                    }
+                    
+
+                } 
+                else if (msg.status === "ok"){
+                    document.getElementById("popup-succes-ajouter").textContent = "Produit ajouté avec succés !";
+                }
+
+            } catch(err) {
+                console.log(err);
+                document.getElementById("popup-err-ajouter").textContent = "Une erreur s'est produite. Reéssayez plus tard.";
+                return false;
+            }
+            
+        }
+
+        function effacerChamps() {
+            document.getElementById("popup-succes-ajouter").textContent ="";
+            document.getElementById("popup-err-ajouter").textContent ="";
+            document.getElementById("popup-err-ajout-nom").textContent = "";
+            document.getElementById("popup-err-ajout-description").textContent = "";
+            document.getElementById("popup-err-ajout-prix").textContent = "";
+            document.getElementById("popup-err-ajout-categorie").textContent = "";
+            document.getElementById("popup-err-ajout-image").textContent = "";
+            document.getElementById("popup-err-ajout-sexe").textContent = "";
+            document.getElementById("popup-err-ajout-est_discontinue").textContent = "";
+            document.getElementById("popup-err-ajout-qty_Petit").textContent = "";
+            document.getElementById("popup-err-ajout-qty_Moyen").textContent = "";
+            document.getElementById("popup-err-ajout-qty_Grand").textContent = "";
+            document.getElementById("popup-err-ajout-qty_Unique").textContent = "";
+        }
+        
+
+        // Afficher le formulaire
+        function AfficherFormulaireAjout() {
+            overlay.style.display = "flex";
+            div_formAjouter.className = "modifier-popup visible";
+            div_formAjouter.focus();
+        }
+
+        // Fermer le formulaire
+        function FermerPopUpAjout() {
+            overlay.style.display = "none";
+            div_formAjouter.className = "modifier-popup";
+            document.body.focus();
+        }
+
+
+</script>
+</html>

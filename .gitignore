@@ -1,0 +1,5 @@
+# Ne pas ajouter le fichier ".env" ici pour l'instant
+
+node_modules
+.idea
+.vrai.env

@@ -1,0 +1,19 @@
+// Utilisateur
+exports.MAX_LENGTH_EMAIL = 254;
+exports.MAX_LENGTH_NOM = 60;
+exports.MAX_LENGTH_PWD = 60;
+exports.MIN_LENGTH_PWD = 6;
+exports.MAX_LENGTH_ADRESSE = 100;
+exports.MAX_LENGTH_TEL = 60;
+exports.MAX_LENGTH_AGE = 60;
+exports.MAX_AGE = 200;
+
+// Produit
+exports.MAX_LENGTH_NOM_PRODUIT = 60;
+exports.MAX_LENGTH_DESCRIPTION_PRODUIT = 500;
+exports.VALEUR_MAX_PRIX_PRODUIT = 9999999999;
+exports.VALEUR_MAX_QTY_PRODUITS = 9999999999;
+
+// Panier
+exports.MAX_QTY_PANIER = 10;
+exports.MIN_QTY_PANIER = 0;

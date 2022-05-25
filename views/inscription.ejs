@@ -1,0 +1,73 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <% if(titre_page){ %>
+        <title><%= titre_page %></title>
+    <% } else{ %>
+        <title>UpNorth - Magasin</title>
+    <% } %>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main>
+        <h1>Créer votre compte</h1>
+        <p class="p-2">Créer votre compte afin de pouvoir commander et accéder à votre historique de commandes.
+        </p>
+        <form action="<%= url_inscription %>" method="POST">
+
+            <label for="nom">Votre nom complet</label>
+            <input id="nom" type="text" name="nom" minlength="0" maxlength="60" placeholder="John Parker" required>
+            <% if(erreur?.nom){ %>
+                <span class="erreur"><%= erreur.nom.erreur %></span>
+            <% } %>
+            
+            <label for="courriel">Courriel</label>
+            <input id="courriel" type="email" name="courriel" minlength="0" maxlength="254" placeholder="john.parker@email.com" required>
+            <% if(erreur?.email){ %>
+                <span class="erreur"><%= erreur.email.erreur %></span>
+            <% } %>
+
+            <label for="mdp">Mot de passe</label>
+            <input id="mdp" type="password" name="mdp" minlength="0" maxlength="60" placeholder="******" required>
+            <% if(erreur?.pwd){ %>
+                <span class="erreur"><%= erreur.pwd.erreur %></span>
+            <% } %>
+
+            <label for="adresse">Adresse</label>
+            <input id="adresse" type="text" name="adresse" minlength="0" maxlength="100" placeholder="888 rue des meuniers, H1H2N3, Quebec, Qc" required>
+            <% if(erreur?.adresse){ %>
+                <span class="erreur"><%= erreur.adresse.erreur %></span>
+            <% } %>
+
+            <label for="tel">Numéro de téléphone (chiffres)</label>
+            <input id="tel" type="tel" name="tel" min="0" max="60" placeholder="4181238721" required>
+            <% if(erreur?.tel){ %>
+                <span class="erreur"><%= erreur.tel.erreur %></span>
+            <% } %>
+
+            <label for="age">Votre age</label>
+            <input id="age" type="number" name="age" min="0" max="200" placeholder="22" required>
+            <% if(erreur?.age){ %>
+                <span class="erreur"><%= erreur.age.erreur %></span>
+            <% } %>
+
+            <a href="/connexion" style="margin-top: 1rem;">Vous avez déja un compte ?</a>
+
+            <button class="btn-big" onclick="popup();">Créer</button>
+            <% if(erreur?.util_existant){ %>
+                <span class="erreur"><%= erreur.util_existant %></span>
+            <% } %>
+
+            <% if(succes){ %>
+                <span class="succes">Utilisateur crée avec succés ! Un email vous a été envoyé pour confirmer votre email.</span>
+            <% } %>
+        </form>
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

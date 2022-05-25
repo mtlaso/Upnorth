@@ -1,0 +1,54 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <link rel="stylesheet" href="/css/panier/styles.css">
+
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+
+    <main class="profil">
+        <% if (commandes.length > 0) { %>
+            <h1>Vos commandes</h1>
+            <hr/>
+            <div class="panier-container">
+                    
+                <div class="panier-background">
+            <% for (let i=0; i < commandes.length; i++) { %>
+                <div class="panier-carte">
+                    <div class="panier-carte__contenu">
+                        <h3>Numéro de commande : 
+                            <a href="/profil/commandes/<%=commandes[i]._id%>"><%= commandes[i]._id %></a>
+                        </h3>
+                        <p>
+                            <b>Date de la commande : </b><%= commandes[i].date %>
+                        </p>
+                        <p>
+                            <b>Nombre d'articles : </b><%= commandes[i].nbArticle %>
+                        </p>
+                        <p>
+                            <b>Adresse de livraison : </b><%= commandes[i].adresseLivraison %>
+                        </p>
+                        <p>
+                            <b>Total : </b><%= commandes[i].total %> $
+                        </p>
+                        <p>
+                            <a href="/profil/commandes/<%=commandes[i]._id%>">Accéder au détails de la commande</a>
+                        </p>
+                        <hr/>
+                    </div>
+                </div>
+            <% } %>
+                </div>
+            </div>
+        <% } else { %>
+            <h2>Oups!</h2>
+            <h3>Vous n'avez pas encore fait de commande.</h3>
+        <% } %>
+        </main>
+        <%- include('../includes/footer.ejs'); %>
+</body>
+</html>

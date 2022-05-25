@@ -1,0 +1,55 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/accueil.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main class="accueil">
+            <% for(let i= 0; i < categories.length; i++){ %>
+                <div class="container-categorie">
+                    <a href="/recherche/categories/<%= categories[i].nom.toLowerCase() %>">
+                        <h2 class="nom-categorie"><%= categories[i].nom %>s</h2>
+                    </a>
+                    <hr />
+
+                    <div class="row-produits">
+
+                    <% produits[i].forEach(function(produit) { %>
+                        
+                        <% if (produit.id_categorie.equals(categories[i]._id)) { %>
+                            <div class="column-produit">
+                                <a href="/produits/<%= produit._id %>">
+                                    <div class="carte-produit">
+                                        <img src="/uploads/images_produits/<%= produit.image %>">
+                                        <div class="container">
+                                        <h4><%= produit.nom %></h4>
+                                        <% if (produit.sexe === "h") { %>
+                                            <p>Pour homme</p>
+                                        <% } else if (produit.sexe === "f") { %>
+                                            <p>Pour femme</p>
+                                        <% } else { %>
+                                            <p>Unisexe</p>
+                                        <% } %>
+                                        <p><%= produit.prix %> $</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </a>
+                        <% } %>
+                    <% }); %> 
+
+                   
+                </div>
+            </div>
+            <% } %>
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

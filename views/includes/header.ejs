@@ -1,0 +1,41 @@
+<header>
+  <div class="header-section-1">
+    <ul>
+      <li class="logo"><a href="/">UpNorth</a></li>
+    </ul>
+  </div>
+  <div class="header-section-2">
+    <div class="header-section-3">
+      <ul>
+        <% if (locals.ejs_is_logged_in === true) { %>
+        <li><a href="/profil">Mon profil</a></li>
+        <li><a href="/profil/panier">Mon panier</a></li>
+        <li><a href="/profil/liste">😍</a></li>
+        <% } else { %>
+        <li><a href="/connexion">Se connecter</a></li>
+        <% } %>
+      </ul>
+    </div>
+    <div class="header-section-4">
+      <form id="recherche" role="search">
+        <input
+          id="recherche"
+          class="recherche"
+          type="text"
+          name="recherche"
+          minlength="0"
+          maxlength="60"
+          placeholder="Recherche par nom"
+          aria-label="Rechercher un produit"
+        />
+        <button
+          class="btn_recherche"
+          formmethod="post"
+          formaction="/recherche/"
+        >
+          Rechercher
+        </button>
+      </form>
+    </div>
+  </div>
+</header>

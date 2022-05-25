@@ -1,0 +1,129 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/details_produit.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+
+<main class="profil">
+    <div class="fil-ariane">
+        <ul>
+            <li><a href="/profil/admin">Profil administrateur</a>&nbsp;⚬&nbsp;</li>
+            <li><a href="/discontinues">Produits discontinués</a>&nbsp;⚬&nbsp;</li>
+            <li><a href="/discontinues/<%= produit._id %>" class="fil-ariane__actif"><%= produit.nom %></a></li>
+        </ul>
+    </div>
+    <div class="container-produit">
+
+        <div class="container-produit__image">
+            <img src="/uploads/images_produits/<%= produit.image %>">
+        </div>
+
+        <div class="container-produit__infos">
+            <h1>Ce produit est discontinué</h1>
+            <h2><%= produit.nom %></h2>
+            <p>
+                <h4>Description du produit discontinué</h4>
+                <%= produit.desc %>
+            </p>
+            <p>
+                <% if(produit.sexe === 'h'){%>
+                    <a href="#">Pour homme</a>
+                <%} else {%>
+                    <a href="#">Pour femme</a>
+                    <%}%>
+                </p>
+            <p>
+                <h4>Catégorie</h4>
+                <%= categorie.nom %>
+            </p>
+            <p>
+                <h4>Prix</h4>
+                <%= produit.prix %> $</p>
+            <p>
+                <h4>Numéro de produit</h4>
+                <%= produit._id %></p>
+            <p>
+                <h4>Statut</h4>
+                <% if (produit.est_discontinue) { %>
+                    Discontinué
+                <% } else { %>
+                    Disponible
+                    <% } %>
+                </p>
+            <p><label for="tailles"><h4>Tailles et quantitées</h4></label>
+                <select name="tailles" id="tailles">
+                    <% for(let i=0; i < tailles.length; i++){ %>
+                        <% if (produit.tailles[i].qty > 0) { %>
+                            <option value="<%= tailles[i].nom %>"><%= tailles[i].nom %> - <%= produit.tailles[i].qty %></option>
+                        <% } %>
+                    <% } %>
+                </select> 
+            </p>
+            <div>
+                <button onclick="" id="btn-remettre-en-stock"  data-url-restocker="<%= url_remettre_en_stock %>">Remettre en stock</button>
+            </div>
+            <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                <span id="restocker-succes" class="succes"></span>
+            </div>
+            <div style="margin-top: 1rem;" onclick="this.style.display='none';">
+                <span id="restocker-err" class="erreur"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+    <%- include('../includes/footer.ejs'); %>
+    
+</body>
+
+<script async>
+    const champSucces = document.getElementById("restocker-succes");
+    const champErreur = document.getElementById("restocker-err");
+    
+    document.getElementById("btn-remettre-en-stock").addEventListener("click", RemettreEnStock);
+
+    // Permet de remettre en stock un produit donné
+    async function RemettreEnStock(e) {
+        try {
+            e.preventDefault();
+            EffacerChamps();
+            
+            let msg;
+            const url = document.getElementById("btn-remettre-en-stock").dataset.urlRestocker;
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id_produit: url.split("/")[2]})
+            };
+
+            // Lancer requette
+            msg = await fetch(url, options);
+            msg = await msg.json();
+
+            if (msg.erreurs) {
+                champErreur.textContent = "✖ Une erreur s'est produite, réessayez plus tard.";
+            } else if (msg.status === "ok") {
+                champSucces.textContent = "✖ Produit remis en stock.";
+            }
+
+        } catch (erreur) {
+            champErreur.textContent = "✖ Une erreur s'est produite, réessayez plus tard.";
+        }
+    }
+
+    function EffacerChamps() {
+        champSucces.textContent = "";
+        champErreur.textContent = "";
+    }
+</script>
+</html>

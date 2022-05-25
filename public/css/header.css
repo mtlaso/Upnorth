@@ -1,0 +1,40 @@
+header {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--header-color);
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--header-padding);
+}
+
+header .logo {
+  font-size: 2.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+header ul {
+  list-style: none;
+}
+
+header .header-section-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+header .header-section-3 ul {
+  display: flex;
+}
+
+header .header-section-3 ul li {
+  padding-left: 1rem;
+}
+
+input#recherche {
+  margin-top: 0.5rem;
+}
+
+.btn_recherche {
+  padding: 0.75rem 1rem 0.75rem 1rem;
+}

@@ -1,0 +1,95 @@
+main.profil {
+  display: block;
+  margin: 10rem;
+}
+
+main.profil h2 {
+  margin-top: 1rem;
+}
+
+main.profil div.informations {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 3rem;
+  gap: 3rem;
+}
+
+main.profil div.informations h3 {
+  font-size: 1.3rem;
+}
+
+main.profil div.informations h4 {
+  font-size: 1.1rem;
+}
+
+main.profil div.informations > :first-child {
+  flex-basis: 28%;
+}
+
+main.profil div.informations > :nth-child(2) {
+  flex-grow: 1;
+}
+
+.p-profil {
+  max-width: 40vw;
+  overflow-wrap: break-word;
+}
+
+.modifier-popup {
+  display: none;
+}
+
+.modifier-popup.visible {
+  display: flex;
+  justify-content: center;
+  z-index: 6;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  right: 50%;
+}
+
+.modifier-popup-btn {
+  font-size: 2.3rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.modifier-popup-btn:hover {
+  cursor: pointer;
+}
+
+table {
+  align-self: stretch;
+}
+
+table tbody {
+  text-align: center;
+}
+
+.overlay {
+  display: none;
+  background-color: rgba(50, 50, 50, 0.88);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 5;
+  position: fixed;
+  overflow: auto;
+  box-sizing: border-box;
+  align-items: flex-start;
+  padding: 54px 0;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media only screen and (max-width: 1021px) {
+  main.profil {
+    display: block;
+    margin: 2rem;
+  }
+}

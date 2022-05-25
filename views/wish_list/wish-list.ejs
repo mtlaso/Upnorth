@@ -1,0 +1,98 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <link rel="stylesheet" href="/css/liste/styles.css">
+    <link rel="stylesheet" href="/css/liste/loader.css">
+    <% if(titre_page){ %>
+        <title><%= titre_page %></title>
+    <% } else{ %>
+        <title>UpNorth - Magasin</title>
+    <% } %>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+    <%- include('../includes/header_profil.ejs'); %>
+
+    <% if (utilisateur.email_confirmer !== true) { %>
+        <%- include('includes/header_confirmer_email.ejs'); %>
+    <% } %>
+
+    <main class="profil">
+            <h1>Votre liste</h1>
+            <h2>Regroupez vos produits préféres en un seul endroit.</h2>
+            <p class="erreur" id="liste-retirer-erreur"></p>
+            <hr>
+
+            <div class="liste-container">
+                <% produits.forEach(function(produit) { %>
+                        <div class="liste-carte" id="<%= produit._id %>">
+                            <a href="/produits/<%= produit._id %>">
+                                <div class="liste-carte__header">
+                                    <img src="/uploads/images_produits/<%= produit.image %>" alt="Image du produit <%= produit.nom %>">
+                                </div>
+                            </a>
+                            <div class="liste-carte__contenu">
+                                <h4><%= produit.nom %></h4>
+                                <h5><%= produit.desc %></h5>
+                                <% if (produit.sexe === "h") { %>
+                                    <p>Pour homme</p>
+                                <% } else if (produit.sexe === "f") { %>
+                                    <p>Pour femme</p>
+                                <% } else { %>
+                                    <p>Unisexe</p>
+                                <% } %>
+                                <div class="liste-carte__contenu__prix">
+                                    <h4><%= produit.prix %> $</h4>
+                                    <span tabindex="0" class="liste-carte__contenu__retirer erreur" onclick="RetirerProduitListe('<%= produit._id %>');" id="btn-retirer-liste">✖ Retirer</span>
+                                </div>
+                            </div>
+                        </div>
+                <% }); %> 
+            </div>
+
+    </main>
+       
+    </main>
+
+    <!-- Retirer produit de la liste (wishliste) -->
+    <script async>
+        const champErreurRetirerListe = document.getElementById("liste-ajout-erreur");
+
+        const RetirerProduitListe = async (idProduit) => {
+            
+            // Retirer element (html)
+            const carteProduit = document.getElementById(idProduit);
+            
+            // Afficher loader
+            carteProduit.classList="";
+            carteProduit.outerHTML = "<div class='loader'>Loading...</div>";
+
+            try {
+                data = new URLSearchParams();
+                data.append("idProduit", idProduit);
+
+                msg = await fetch("/profil/liste", {
+                    method: 'DELETE',
+                    body: data
+                });
+
+                msg = await msg.json();
+                console.log("msg : ", msg);
+
+                document.getElementsByClassName("loader")[0].outerHTML = "";
+            } catch (err) {
+                champErreurRetirerListe.textContent = "Une erreur s'est produit, réssayez plus tard."
+                champErreurRetirerListe.focus();
+            }
+        }
+
+        const EffacerChamps = () => {
+            champErreurRetirerListe.textContent = "";
+        }
+    </script>
+
+    <%- include('../includes/footer.ejs'); %>
+</body>
+</html>

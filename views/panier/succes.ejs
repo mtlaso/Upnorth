@@ -1,0 +1,27 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/accueil.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+<main class="accueil">
+    <div>
+        <h1>Paiement confirmé</h1>
+        <h3>Votre commande est en route!</h3>
+
+        <p>
+            <a href="/">Retour à l'accueil</a>
+            <br/>
+            <a href="/profil/panier">Retour au panier</a>
+        </p>
+    </div>
+</main>
+
+    <%- include('../includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

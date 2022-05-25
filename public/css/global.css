@@ -1,0 +1,169 @@
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: rgb(179, 177, 177);
+  border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgb(136, 136, 136);
+  border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgb(100, 100, 100);
+  border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb:active {
+  background: rgb(68, 68, 68);
+  border-radius: 10px;
+}
+
+* {
+  overflow-wrap: break-word;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a.modifier {
+  color: #1a15e9;
+}
+
+a:hover {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s;
+}
+
+textarea {
+  max-width: 20rem;
+  min-width: 20rem;
+}
+
+input,
+textarea,
+select {
+  padding: 0.7rem;
+  border-top-right-radius: 0.3rem;
+  border-top-left-radius: 0.3rem;
+  border: none;
+  width: 20rem;
+  border-bottom: var(--input-recherche);
+  background-color: white;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+input[type="checkbox"]:focus {
+  border-bottom: var(--input-recherche-hover);
+  outline: none;
+  transition: 0.2s;
+}
+
+label {
+  margin: 1.3rem 0 0.9rem 0;
+}
+
+.icon {
+  height: 1rem;
+  font-weight: bolder;
+  text-align: left;
+}
+
+button {
+  border: none;
+  background-color: black;
+  color: white;
+  margin-top: 1rem;
+  border-radius: 0.7rem;
+  padding: 0.7rem 3rem 0.7rem 3rem;
+}
+
+button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+button:focus {
+  outline: var(--input-recherche-hover);
+}
+
+button.btn-big {
+  padding: 1rem 2rem 1rem 2rem;
+  font-size: 1rem;
+}
+
+button.btn-liste {
+  background-color: transparent;
+  border: 0.1rem solid #ccc;
+  color: black;
+  font-weight: 600;
+}
+
+button.btn-liste:hover {
+  border-color: black;
+}
+
+button.btn-liste::after {
+  content: " ❤";
+}
+
+button.btn-desactiver {
+  opacity: 0.5;
+  cursor: no-drop;
+}
+
+.p-2 {
+  text-align: left;
+  max-width: 41vw;
+  min-width: fit-content;
+  overflow-wrap: break-word;
+}
+
+.erreur {
+  margin-top: 1rem;
+  color: #ad1414;
+  max-width: 20rem;
+  overflow-wrap: break-word;
+}
+
+.succes {
+  margin-top: 1rem;
+  color: green;
+  max-width: 20rem;
+  overflow-wrap: break-word;
+}
+
+table input {
+  width: 5rem;
+}
+
+.fil-ariane {
+  display: block;
+  padding: .9rem .9rem .9rem 0;
+  margin-bottom: 1rem;
+}
+
+.fil-ariane ul {
+  display: flex;
+  list-style-type: none;
+}
+
+.fil-ariane__actif {
+  font-weight: bold;
+}

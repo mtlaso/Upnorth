@@ -1,0 +1,25 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+
+    <main>
+       <h1>Ouch, erreur 400 !</h1>
+       <p class="p-2">Nous ne pouvons pas éffectuer cette action pour l'instant. Réssayer plus tard.</p>
+
+       <% if (erreur) { %>
+            <p class="p-2 erreur"><%= erreur %></p>
+       <% } %>
+
+       <a href="/">Retournez au menu principal</a>
+    </main>
+
+    <%- include('../includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

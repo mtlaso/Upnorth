@@ -1,0 +1,41 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main>
+        <h1>Connectez-vous à votre compte</h1>
+        <p class="p-2">Connectez-vous à votre compte afin de voir et modifier vos informations personelles, et accéder à votre historique de commandes.
+        </p>
+        <form action="/connexion" method="post">
+
+            <label for="courriel">Courriel</label>
+            <input id="courriel" type="email" name="courriel" minlength="0" maxlength="254" placeholder="john.parker@email.com" required>
+
+            <label for="mdp">Mot de passe</label>
+            <input id="mdp" type="password" name="mdp" minlength="0" maxlength="60" placeholder="******" required>
+        
+            <a href="/inscription" style="margin-top: 1rem;">Vous n'avez pas de compte ?</a>
+            <a href="/recover" style="margin-top: .5rem;">Mot de passe oublié ?</a>
+
+            <button type="submit" class="btn-big">Connexion</button>
+
+            <% if (erreur) { %>
+                <span class="erreur"><%= erreur %></span>
+            <% } %>
+
+            <% if (compteCree) { %>
+                <span class="succes">Utilisateur crée avec succés ! Un email vous a été envoyé pour confirmer votre email.</span>
+            <% } %>
+        </form>
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

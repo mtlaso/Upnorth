@@ -1,0 +1,137 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <link rel="stylesheet" href="/css/panier/styles.css">
+
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+    
+    <% if (panier === null) {%>
+        <%- include('../includes/header_confirmer_email.ejs') %>
+    <% } %>
+    
+<main class="profil">
+    <% if (panier !== null) {%>
+        
+        <h1>Votre panier</h1>
+        <hr/>
+
+        <% if (panier.length > 0) { %>
+
+            <div class="panier-container">
+                    
+                <div class="panier-background">
+
+                    <% for (let i=0; i < panier.length; i++) { %>
+
+                        <div class="panier-carte">
+                            
+                            <a class="panier-carte__image" href="/produits/<%= produits[i]._id %>">
+                                <img src="/uploads/images_produits/<%= produits[i].image %>" alt="Image du produit <%= produits[i].nom %>.">
+                            </a>
+
+                            <div class="panier-carte__contenu">
+                                <h3><%= produits[i].nom %></h3>
+                                <p>
+                                    <b>Prix : </b><%= produits[i].prix %> $
+                                </p>
+                                <p>
+                                    <b>Taille : </b><%= panier[i].taille %>
+                                </p>
+                                <label for="qty-<%= panier[i]._id %>"><b>Quantité : </b></label>
+                                <input type="number" id="qty-<%= panier[i]._id %>" value="<%= panier[i].qty %>" min="0" max="10">
+
+                                <div class="panier-carte__contenu__boutons">
+
+                                    <a href="#" data-id-produit="<%= panier[i]._id %>" onclick="ChangerQuantite('<%= panier[i]._id %>')">
+                                        <span>Changer quantité</span>
+                                    </a>
+                                    <a href="/profil/panier/supprimer/<%= panier[i]._id %>">
+                                        <span class="erreur">✖ Retirer</span>
+                                    </a>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <% } %>
+                </div>
+
+                <div class="panier-resume-commande panier-background">
+                        <h1>Résumé de commande</h1>
+                        <hr/>
+                        <p>
+                            <b>Adresse : </b><%= adresse %>
+                        </p>
+                        <p>
+                            <b>Nombre d'articles : </b><%= nbArticle %>
+                        </p>
+                        <p>
+                            <b>Sous-total : </b><%= total %>$
+                        </p>
+                        <button form="formCheckout" type="submit">Commander</button>
+                </div>
+                
+                <form style="display: none;" id="formCheckout" action="/create-checkout-session" method="post">
+                </form>
+
+                
+            </div>
+                
+    
+        <% } else { %> 
+            <h2>Oups!</h2>
+            <h3>Il n'y a malheureusement aucun produit dans votre panier.</h3>
+        <% } %>
+        
+        <% } else { %>
+            <h2>Oups!</h2>
+            <h3>Il est impossible d'ajouter un article à votre panier.</h3>
+        <% } %>
+
+</main>
+
+    <%- include('../includes/footer.ejs'); %>
+
+    <!-- Changer qty du produit dans le panier -->
+    <script async>
+        async function ChangerQuantite(idProduit) {
+            try {
+                const qtyProduit = document.getElementById(`qty-${idProduit}`);
+
+                let data;
+                let msg;
+
+                data = new URLSearchParams();
+                data.append("idProduit", idProduit);
+                data.append("qtyProduit", qtyProduit.value);
+
+                msg = await fetch("/profil/panier/changer-qty", {
+                    method: 'PUT',
+                    body: data
+                });
+
+                msg = await msg.json();
+                console.log("msg : ", msg);
+
+                if (msg.status === "ok") {
+                    alert("✖ Quantité modifiée.");
+                } else {
+                    if (msg.erreurs.qty) {
+                        alert(msg.erreurs.qty.erreur);
+                    } else {
+                        alert("✖ Une erreur s'est produite. Reéssayez plus tard.");
+                    }
+                }
+
+            } catch (erreur) {
+                alert("✖ Une erreur s'est produite. Reéssayez plus tard.", erreur);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+nav.liste-categories.profil {
+  background-color: black;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
+nav.liste-categories.profil ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  list-style: none;
+}
+
+nav.liste-categories.profil ul a {
+  color: white;
+}

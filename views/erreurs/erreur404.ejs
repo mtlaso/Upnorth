@@ -1,0 +1,25 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+
+    <main>
+       <h1>Ouch, erreur 404 !</h1>
+       <p class="p-2">La page à la quelle vous essayez d'accèder n'existe pas.</p>
+
+       <% if (erreur) { %>
+            <p class="p-2 erreur"><%= erreur %></p>
+       <% } %>
+
+       <a href="/">Retournez au menu principal</a>
+    </main>
+
+    <%- include('../includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

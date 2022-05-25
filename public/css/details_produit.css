@@ -1,0 +1,43 @@
+.container-produit {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+.container-produit__image {
+  flex-basis: 70%;
+  margin-bottom: 1rem;
+}
+
+.container-produit__infos form {
+  margin: 0;
+}
+
+.container-produits__infos__champ {
+  margin-top: 1rem;
+  overflow-wrap: break-word;
+}
+
+.produitAjouter {
+  color: green;
+}
+
+@media only screen and (max-width: 1433px) {
+  .container-produit {
+    display: block;
+  }
+
+  .container-produit__infos form {
+    padding: 2rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 1.3rem;
+  }
+
+  .container-produit__infos form select {
+    width: 40%;
+  }
+}
+

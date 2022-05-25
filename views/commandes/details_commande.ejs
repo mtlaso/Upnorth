@@ -1,0 +1,65 @@
+<%- include('../includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <link rel="stylesheet" href="/css/panier/styles.css">
+
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('../includes/header.ejs'); %>
+    <%- include('../includes/liste_categories.ejs'); %>
+    
+<main class="profil">
+    <% if (commande !== null) {%>
+        
+        <h1>Votre commande du <%= date %></h1>
+        <hr/>
+            <div class="panier-container">
+                    
+                <div class="panier-background">
+
+                    <% for (let i=0; i < commande.produits.length; i++) { %>
+
+                        <div class="panier-carte">
+                            
+                            <a class="panier-carte__image" href="/produits/<%= commande.produits[i].id_produit %>">
+                                <img src="/uploads/images_produits/<%= commande.produits[i].image %>" alt="Image du produit <%= commande.produits[i].nom %>.">
+                            </a>
+
+                            <div class="panier-carte__contenu">
+                                <h3><%= commande.produits[i].nom %></h3>
+                                <p>
+                                    <b>Prix : </b><%= commande.produits[i].prix %> $
+                                </p>
+                                <p>
+                                    <b>Taille : </b><%= commande.produits[i].taille %>
+                                </p>
+                                <p>
+                                    <b>Quantité : </b><%= commande.produits[i].qty %>
+                                </p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div class="panier-resume-commande panier-background">
+                        <h1>Résumé de commande</h1>
+                        <hr/>
+                        <p>
+                            <b>Adresse : </b><%= commande.adresseLivraison %>
+                        </p>
+                        <p>
+                            <b>Nombre d'articles : </b><%= commande.produits.length %>
+                        </p>
+                        <p>
+                            <b>Total : </b><%= commande.total %>$
+                        </p>
+                </div>                
+            </div>
+            <% } %>
+</main>
+
+    <%- include('../includes/footer.ejs'); %>
+</body>
+</html>

@@ -1,0 +1,15 @@
+nav.liste-categories.confirmer-email {
+  background-color: red;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+}
+
+nav.liste-categories.confirmer-email ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  list-style: none;
+}
+
+/* nav.liste-categories.confirmer-email ul a {
+  color: white;
+} */

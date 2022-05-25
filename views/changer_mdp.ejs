@@ -1,0 +1,94 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main>
+        <h1>Changer votre mot de passe</h1>
+        <p class="p-2">Entrez votre nouveau mot de passe.
+        </p>
+
+        <form method="post" id="FormchangerMdp" action="/changer-mdp">
+
+            <input type="hidden" value="<%= token %>" name="token">
+            <label for="mdp">Nouveau mot de passe</label>
+            <input id="mdp" type="password" name="mdp" minlength="0" maxlength="60" placeholder="******" required>
+            <% if (erreurs?.mdp) { %>
+                <span class="erreur"><%= erreurs.mdp.erreur %></span>
+            <% } %>
+
+            <button type="submit" class="btn-big">Envoyer</button>
+
+            <div style="margin-top: 1rem; max-width: fit-content;" onclick="this.style.display='none';">
+                <span id="modifier-mdp-succes" class="succes"></span>
+            </div>
+
+            <div style="margin-top: 1rem; max-width: fit-content;" onclick="this.style.display='none';">
+                <span id="modifier-mdp-err" class="erreur"></span>
+            </div>
+        </form>
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+
+<script async>
+    const champSucces = document.getElementById("modifier-mdp-succes");
+    const champErreur = document.getElementById("modifier-mdp-err");
+
+    const formChangerMdp = document.getElementById("FormchangerMdp");
+    formChangerMdp.addEventListener("submit", ModifierMdp);
+    
+    async function ModifierMdp(e) {
+        try {
+            EffacerChamps();
+
+            e.preventDefault();
+
+            // Preparer requete
+            const url = formChangerMdp.attributes.action.value;
+            const form = new FormData(formChangerMdp);
+            
+            let donnees = new URLSearchParams();
+            for (const pair of form) {
+                donnees.append(pair[0], pair[1]);
+            }
+
+            const options = {
+                method: 'POST',
+                body: donnees,
+            };
+
+            let msg = await fetch(url, options);
+            msg = await msg.json();
+
+            if (msg.erreurs) {
+                if (msg.erreurs.pwd) { champErreur.textContent = `✖ ${msg.erreurs.pwd.erreur}`; }
+                else {
+                    champErreur.textContent = "✖ Une erreur s'est produite après avoir essayé de modifier votre mot de passe. Réessayez plus tard.";
+                }
+            }
+            
+            if (msg.status === "ok"){
+                champSucces.textContent = "✖ Mot de passe modifié avec succés !";
+            }
+        } catch (err) {
+            champErreur.textContent = "✖ Une erreur s'est produite après avoir essayé de modifier votre mot de passe. Réessayez plus tard.";
+        }
+    }
+
+    function EffacerChamps() {
+        champSucces.textContent = "";
+        champErreur.textContent = "";
+        
+        champSucces.parentElement.style.display = "block";
+        champErreur.parentElement.style.display = "block";
+    }
+</script>
+</html>

@@ -1,0 +1,50 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main>
+        <h1>Mot de passe oublié</h1>
+        <p class="p-2">Entrez votre courriel afin de récupérez votre mot de passe.
+        </p>
+
+        <form action="/recover" method="post">
+
+            <label for="courriel">Courriel</label>
+            <input id="courriel" type="email" name="email" minlength="0" maxlength="254" placeholder="john.parker@email.com" required>
+            <% if (erreurs?.email) { %>
+                <span class="erreur"><%= erreurs.email.erreur %></span>
+            <% } %>
+
+            <label for="tel">Numéro de téléphone (chiffres)</label>
+            <input id="tel" type="tel" name="tel" min="0" max="60" placeholder="4181238721" required>
+            <% if (erreurs?.tel) { %>
+                <span class="erreur"><%= erreurs.tel.erreur %></span>
+            <% } %>
+
+            <p style="
+                text-align: left;
+                max-width: 20em;
+                overflow-wrap: break-word;
+            ">Votre numéro de téléphone servira à confirmer votre identité.</p>
+
+            <button type="submit" class="btn-big">Récupérer</button>
+            <% if (erreurs?.utilisateur_introuvable) { %>
+                <span class="succes">Si un compte avec ce courriel existe, un courriel vous sera envoyé.</span>
+            <% } %>
+
+            <% if (succes) { %>
+                <span class="succes">Si un compte avec ce courriel existe, un courriel vous sera envoyé.</span>
+            <% } %>
+        </form>
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+</html>

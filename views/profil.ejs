@@ -1,0 +1,201 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profil.css">
+    <% if(titre_page){ %>
+        <title><%= titre_page %></title>
+    <% } else{ %>
+        <title>UpNorth - Magasin</title>
+    <% } %>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+    <%- include('includes/header_profil.ejs'); %>
+
+    <% if (utilisateur.email_confirmer !== true) { %>
+        <%- include('includes/header_confirmer_email.ejs'); %>
+    <% } %>
+
+    <main class="profil">
+        <% if(utilisateur){ %>
+            <h1>Bonjour, <%= utilisateur.nom %> </h1>
+            <h2>Voici vos informations :</h2>
+            
+            <div class="informations">
+                <h3>Informations</h3>
+                <div>
+                    <h4 class="p-profil">Général</h4>
+                    <p class="p-profil">Id : <%= utilisateur._id %></p>
+                    <p class="p-profil">Nom : <%= utilisateur.nom %></p>
+                    <p class="p-profil">Age : <%= utilisateur.age %></p>
+                    <p class="p-profil">Statut administrateur : <%= utilisateur.est_admin %></p>
+                    <a href="#" class="modifier" onclick="AfficherModifier();">Modifier &#x270E;</a>
+                </div>
+                <div>
+                    <h4 class="p-profil">Contact</h4>
+                    <p class="p-profil">Courriel : <%= utilisateur.email %></p>
+                    <p class="p-profil">Teléphone : <%= utilisateur.tel %></p>
+                    <p class="p-profil">Adresse : <%= utilisateur.adresse %></p>
+                </div>
+            </div>
+
+            <div class="informations">
+                <div>
+                    <h3 class="p-profil">Vos commandes</h3>
+                    <p class="p-profil"><a href="/profil/commandes">Voir votre liste des commandes.</a></p>
+                </div>
+
+                <div>
+                    <h3 class="p-profil">Liste</h3>
+                    <p class="p-profil"><a href="/profil/liste">Voir votre liste de produits préférés.</a></p>
+                </div>
+            </div>
+
+            <% if (utilisateur.est_admin === true) { %>
+                <div class="informations">
+                    <p class="p-profil"><a href="/profil/admin">Accéder au profil administrateur</a></p>
+                </div>
+            <% } %>
+
+            <div id="modifier-popup" class="modifier-popup">
+                <form id="modifier-form" action="<%= url_modifier %>">
+                    <span class="modifier-popup-btn" onclick="FermerPopUp();">&#x2716;</span>
+                    <h1>Modifier vos informations</h1>
+                    
+                    <label for="nom">Votre nom complet</label>
+                    <input id="nom" type="text" name="nom" minlength="0" maxlength="60" placeholder="John Parker" value="<%= utilisateur.nom %>" required>
+                    <span id="popup-err-nom" class="erreur"></span>
+                    
+
+                    <label for="courriel">Courriel</label>
+                    <input id="courriel" type="email" name="courriel" minlength="0" maxlength="60" placeholder="john.parker@email.com" value="<%= utilisateur.email %>"required>
+                    <span id="popup-err-courriel" class="erreur"></span>
+                    
+                    <label for="mdp">Mot de passe (laisser vide pour ne pas changer)</label>
+                    <input id="mdp" type="password" name="mdp" minlength="0" maxlength="60" placeholder="******">
+                    <span id="popup-err-mdp" class="erreur"></span>
+
+                    <label for="adresse">Adresse</label>
+                    <input id="adresse" type="text" name="adresse" minlength="0" maxlength="100" placeholder="888 rue des meuniers, H1H2N3, Quebec, Qc" value="<%= utilisateur.adresse %>" required>
+                    <span id="popup-err-adresse" class="erreur"></span>
+
+                    <label for="tel">Numéro de téléphone (chiffres)</label>
+                    <input id="tel" type="tel" name="tel" min="0" max="60" placeholder="4181238721" value="<%= utilisateur.tel %>" required>
+                    <span id="popup-err-tel" class="erreur"></span>
+
+                    <label for="age">Votre age</label>
+                    <input id="age" type="number" name="age" min="0" max="200" placeholder="22" value="<%= utilisateur.age %>" required>
+                    <span id="popup-err-age" class="erreur"></span>
+
+                    
+
+                    <button class="btn-big">Modifier</button>
+                    <br>
+                    <a href="#" class="modifier" onclick="FermerPopUp();">Fermer</a>
+                    <span id="popup-succes" class="succes"></span>
+                    <span id="popup-err" class="erreur"></span>
+                </form>
+            </div>
+            <div id="overlay" class="overlay"></div>
+        <% }%>
+
+    </main>
+
+    <%- include('includes/footer.ejs'); %>
+    <script async>
+        const overlay = document.getElementById("overlay");
+        const div_form = document.getElementById("modifier-popup");
+        const form = document.getElementById("modifier-form");
+        form.addEventListener("submit", Modifier);
+
+        // Modifier les informations de façon asynchrone (sans recharger la page)
+        async function Modifier(e) {
+            try {
+                e.preventDefault();
+                effacerChamps();
+                
+                // Preparer requete
+                const formulaire = new FormData(form);
+                
+                const data = new URLSearchParams();
+                for (const pair of formulaire) {
+                    data.append(pair[0], pair[1]);
+                }
+
+                // Envoyer requete
+                const url = form.attributes.action.value;
+                const options = {
+                    method: 'POST',
+                    body: data
+                };
+                
+                let msg = await fetch(url, options);
+                msg = await msg.json();
+
+                if (msg.erreurs) {
+                    if (msg.erreurs.adresse) {
+                        document.getElementById("popup-err-adresse").textContent = msg.erreurs.adresse.erreur;
+                    } 
+                    
+                    if (msg.erreurs.age) {
+                        document.getElementById("popup-err-age").textContent = msg.erreurs.age.erreur;
+                    } 
+                    
+                    if (msg.erreurs.email) {
+                        document.getElementById("popup-err-courriel").textContent = msg.erreurs.email.erreur;
+                    } 
+                    
+                    if (msg.erreurs.nom) {
+                        document.getElementById("popup-err-nom").textContent = msg.erreurs.nom.erreur;
+                    } 
+                    
+                    if (msg.erreurs.pwd) {
+                        document.getElementById("popup-err-mdp").textContent = msg.erreurs.pwd.erreur;
+                    } 
+                    
+                    if (msg.erreurs.tel) {
+                        document.getElementById("popup-err-tel").textContent = msg.erreurs.tel.erreur;
+                    }
+                } 
+                else if (msg.status === "ok"){
+                    document.getElementById("popup-succes").textContent = "Utilisateur modifié avec succés !";
+                }
+                
+                return false;
+
+            } catch (err) {
+                document.getElementById("popup-err").textContent = "Une erreur s'est produite. Reéssayez plus tard.";
+                return false;
+            }
+        }
+
+        function effacerChamps() {
+            document.getElementById("popup-err-adresse").textContent = "";
+            document.getElementById("popup-err-age").textContent = "";
+            document.getElementById("popup-err-courriel").textContent = "";
+            document.getElementById("popup-err-nom").textContent = "";
+            document.getElementById("popup-err-mdp").textContent = "";
+            document.getElementById("popup-err-tel").textContent = "";
+            document.getElementById("popup-succes").textContent = "";
+            document.getElementById("popup-err").textContent = "";
+        }
+        
+        function AfficherModifier() {
+            overlay.style.display = "flex";
+            div_form.className = "modifier-popup visible";
+            div_form.focus();
+            // document.body.style.overflow = "hidden";
+        }
+
+        function FermerPopUp() {
+            overlay.style.display = "none";
+            div_form.className = "modifier-popup";
+            document.body.focus();
+            // document.body.style.overflow = "auto";
+        }
+    
+    </script>
+    
+</body>
+</html>

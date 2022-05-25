@@ -1,0 +1,46 @@
+<%- include('includes/top.ejs'); %>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/recherche.css">
+    <title><%= titre_page %></title>
+</head>
+<body>
+
+    <%- include('includes/header.ejs'); %>
+    <%- include('includes/liste_categories.ejs'); %>
+
+    <main class="recherche">
+        <h2>Tout les produits</h2>
+        <hr/>
+        <% if (produits.length > 0) { %>
+        <div class="container-produits">
+                <% for(let i=0; i< produits.length; i++){ %>
+                    <a href="/produits/<%= produits[i]._id%>">
+                    <div class="carte-produit">
+                        <img src="/uploads/images_produits/<%= produits[i].image %>">
+                        <div class="container">
+                            <h4><%= produits[i].nom %></h4>
+                            <h5><%= produits[i].desc %></h5>
+                            <% if (produits[i].sexe === "h") { %>
+                                <p><h5>Pour homme</h5></p>
+                            <% } else if (produits[i].sexe === "f") { %>
+                                <p><h5>Pour femme</h5></p>
+                            <% } else {%>
+                                <p><h5>Unisexe</h5></p>
+                            <% } %>
+                                <h4><%= produits[i].prix %> $</h4>
+                        </div>
+                    </div>
+                </a>
+                <% } %>
+        </div>
+        <% } else { %>
+            <h1>Oups!</h1>
+            <h3>Il n'y a malheureusement aucun produit correspondant à votre recherche.</h3>
+        <% } %>
+    </main> 
+
+    <%- include('includes/footer.ejs'); %>
+    
+    
+</body>
+</html>
