@@ -5,7 +5,8 @@ Magasin de vente crée dans le cadre d'un cours
 # Site
 
 [UpNorth en ligne](https://upnorth-cegep.herokuapp.com/) 
-**Inscription ne marche pas, car c'est en mode sandbox (amazon SES)**
+
+- **L'inscription ne marche pas, car c'est en mode sandbox (amazon SES)**
 
 # Utilisation
 
