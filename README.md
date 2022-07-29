@@ -52,4 +52,4 @@ Magasin de vente crée dans le cadre d'un cours
 
 # Technologies
 
-Technologies utilisés : Html, Css, Javacscript, Nodejs, Expressjs, Mongodb, Aws (SES), Stripe, Heroku
+Technologies utilisées : Html, Css, Javacscript, Nodejs, Expressjs, Mongodb, Aws (SES), Stripe, Heroku
