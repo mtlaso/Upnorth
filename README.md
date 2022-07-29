@@ -1,10 +1,10 @@
 # UpNorth
 
+Magasin de vente crée dans le cadre d'un cours
+
 # Site
 
-[UpNorth en ligne](https://calendar-ts.netlify.app/)
-
-Magasin de vente crée dans le cadre d'un cours
+[UpNorth en ligne](https://upnorth-cegep.herokuapp.com/) **inscription ne marche pas, car c'est en mode sandbox (amazon SES)**
 
 # Utilisation
 
