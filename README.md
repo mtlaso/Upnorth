@@ -1,7 +1,6 @@
 # UpNorth
 
-Magasin de vente crée dans le cadre d'un cours
-
+Magasin de vente.
 # Site
 
 [UpNorth en ligne](https://upnorth-cegep.herokuapp.com/) 
@@ -12,11 +11,10 @@ Magasin de vente crée dans le cadre d'un cours
 
 1. Installer nodejs (version récente)
 2. Cloner ce projet
-3. Aller dans le dossier cloné `cd upnorth-projet`
-4. Télécharger paquets nécessaires `npm install`
-5. Installer nodemon `npm install nodemon`
-6. Remplir le fichier `.env` avec les bonnes valeurs
-7. Lancer l'application
+3. Télécharger paquets nécessaires `npm install`
+4. Installer nodemon `npm install nodemon`
+5. Remplir le fichier `.env` avec les bonnes valeurs
+6. Lancer l'application `npx nodemon`
 
 # Fonctionnalités
 
