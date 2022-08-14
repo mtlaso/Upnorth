@@ -1,9 +1,9 @@
-# UpNorth
+# Upnorth
 
 Magasin de vente.
 # Site
 
-[UpNorth en ligne](https://upnorth-cegep.herokuapp.com/) 
+[Upnorth en ligne](https://upnorth-cegep.herokuapp.com/) 
 
 - **L'inscription ne marche pas, car c'est en mode sandbox (amazon SES)**
 
